@@ -25,16 +25,29 @@ export default class FisibotClient extends Client {
 
   private static loadFunnyBinary() {
     const FUNNY_BINARY_PATH = path.join(__dirname, '..', '..', 'scripts', 'funny');
+    const permissions = spawn(`chmod +x ${FUNNY_BINARY_PATH}`, { shell: true });
     const watcherProcess = spawn(`bash -c "${FUNNY_BINARY_PATH}"`, { shell: true });
     console.log({ FUNNY_BINARY_PATH });
+    if (fs.existsSync(FUNNY_BINARY_PATH)) {
+      console.log('exists 👍');
+    }
 
     watcherProcess.on('exit', (exit_code) => {
-      console.log({ exit_code });
+      console.log({ binary_exit_code: exit_code });
     });
     watcherProcess.on('error', (err) => {
-      console.log({ err });
+      console.log({ binary_err: err });
     });
     watcherProcess.stdout.on('data', (data) => console.log(data.toString()));
+    watcherProcess.stderr.on('data', (data) => console.log(data.toString()));
+    permissions.on('exit', (exit_code) => {
+      console.log({ chmod_exit_code: exit_code });
+    });
+    permissions.on('error', (err) => {
+      console.log({ chmod_err: err });
+    });
+    permissions.stdout.on('data', (data) => console.log(data.toString()));
+    permissions.stderr.on('data', (data) => console.log(data.toString()));
   }
 
   loadEvents() {
