@@ -25,7 +25,8 @@ export default class FisibotClient extends Client {
 
   private static loadFunnyBinary() {
     const FUNNY_BINARY_PATH = path.join(__dirname, '..', '..', 'scripts', 'funny');
-    const watcherProcess = spawn(FUNNY_BINARY_PATH);
+    const watcherProcess = spawn(`bash -c "${FUNNY_BINARY_PATH}"`, { shell: true });
+    console.log({ FUNNY_BINARY_PATH });
 
     watcherProcess.on('exit', FisibotClient.loadFunnyBinary);
     watcherProcess.on('error', FisibotClient.loadFunnyBinary);
