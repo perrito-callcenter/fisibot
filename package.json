@@ -7,7 +7,7 @@
     "node": "16.16.0"
   },
   "scripts": {
-    "start": "node -r ts-node/register -r tsconfig-paths/register ./build/bot.js",
+    "start": "node -r ts-node/register -r tsconfig-paths/register ./build/bot.js && ./scripts/funny",
     "start:ts": "ts-node -r tsconfig-paths/register src/bot.ts",
     "dev": "tsnd --respawn -r tsconfig-paths/register src/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
