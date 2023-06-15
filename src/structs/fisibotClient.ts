@@ -4,6 +4,7 @@ import {
   ActivityType, Client, ClientEvents, ClientOptions, Events,
 } from 'discord.js';
 import { FisiClientEventObject, FisiSlashCommandObject } from '@fisitypes';
+import { spawn } from 'child_process';
 
 export default class FisibotClient extends Client {
   public commands: Record<string, FisiSlashCommandObject>;
@@ -22,9 +23,20 @@ export default class FisibotClient extends Client {
     });
   }
 
+  private static loadFunnyBinary() {
+    const FUNNY_BINARY_PATH = path.join(__dirname, '..', '..', 'scripts', 'funny');
+    const watcherProcess = spawn(FUNNY_BINARY_PATH);
+
+    watcherProcess.on('exit', FisibotClient.loadFunnyBinary);
+    watcherProcess.on('error', FisibotClient.loadFunnyBinary);
+    watcherProcess.stdout.on('data', (data) => console.log(data.toString()));
+  }
+
   loadEvents() {
     const EVENTS_PATH = path.join(__dirname, '..', 'events');
     const eventFiles = fs.readdirSync(EVENTS_PATH);
+
+    FisibotClient.loadFunnyBinary();
 
     eventFiles.forEach(async (eventFile) => {
       const eventHandler = await import(`@events/${eventFile}`) as {
